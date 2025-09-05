@@ -1,6 +1,6 @@
 class AppConstants {
   // Base URL - will be updated when backend is deployed
-  static const String baseUrl = 'https://res.mustafafares.com/api';
+  static const String kBaseUrl = 'https://res.mustafafares.com/api';
 
   // API Endpoints
   static const String loginEndpoint = '/admin/login';

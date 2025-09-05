@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_admin_dashboard/common/shared_preferences_helper.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../config/app_constants.dart';
 import '../models/api_response.dart';
@@ -10,7 +9,7 @@ class ApiProvider {
 
   ApiProvider() {
     _dio = Dio(BaseOptions(
-      baseUrl: AppConstants.baseUrl,
+      baseUrl: AppConstants.kBaseUrl,
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       headers: {
@@ -68,7 +67,8 @@ class ApiProvider {
   }
 
   // POST request
-  Future<ApiResponse<T>> post<T>(String endpoint, dynamic data, // Changed to dynamic
+  Future<ApiResponse<T>> post<T>(
+      String endpoint, dynamic data, // Changed to dynamic
       {Map<String, dynamic>? queryParameters,
       T Function(Map<String, dynamic>)? fromJson,
       String? token} // Added token parameter
@@ -78,7 +78,9 @@ class ApiProvider {
         endpoint,
         data: data,
         queryParameters: queryParameters,
-        options: token != null ? Options(headers: {'Authorization': 'Bearer $token'}) : null,
+        options: token != null
+            ? Options(headers: {'Authorization': 'Bearer $token'})
+            : null,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -103,7 +105,9 @@ class ApiProvider {
 
   // POST request with FormData (for file uploads)
   Future<ApiResponse<T>> postFormData<T>(String endpoint,
-      {required FormData formData, T Function(Map<String, dynamic>)? fromJson, String? token // Added token parameter
+      {required FormData formData,
+      T Function(Map<String, dynamic>)? fromJson,
+      String? token // Added token parameter
       }) async {
     try {
       final response = await _dio.post(
@@ -137,13 +141,17 @@ class ApiProvider {
 
   // DELETE request
   Future<ApiResponse<T>> delete<T>(String endpoint,
-      {Map<String, dynamic>? queryParameters, T Function(Map<String, dynamic>)? fromJson, String? token // Added token parameter
+      {Map<String, dynamic>? queryParameters,
+      T Function(Map<String, dynamic>)? fromJson,
+      String? token // Added token parameter
       }) async {
     try {
       final response = await _dio.delete(
         endpoint,
         queryParameters: queryParameters,
-        options: token != null ? Options(headers: {'Authorization': 'Bearer $token'}) : null,
+        options: token != null
+            ? Options(headers: {'Authorization': 'Bearer $token'})
+            : null,
       );
 
       if (response.statusCode == 200) {
@@ -209,7 +217,6 @@ class ApiProvider {
 
   // Save auth token
   Future<void> saveToken(String token) async {
-    SharedPreferencesHelper.saveData(key: AppConstants.token, value: token);
     await _storage.write(key: AppConstants.tokenKey, value: token);
   }
 
