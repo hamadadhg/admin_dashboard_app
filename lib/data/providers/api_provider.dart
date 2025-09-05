@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_admin_dashboard/common/shared_preferences_helper.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../config/app_constants.dart';
 import '../models/api_response.dart';
@@ -67,13 +68,11 @@ class ApiProvider {
   }
 
   // POST request
-  Future<ApiResponse<T>> post<T>(
-    String endpoint, 
-    dynamic data, // Changed to dynamic
-    {Map<String, dynamic>? queryParameters,
-    T Function(Map<String, dynamic>)? fromJson,
-    String? token} // Added token parameter
-  ) async {
+  Future<ApiResponse<T>> post<T>(String endpoint, dynamic data, // Changed to dynamic
+      {Map<String, dynamic>? queryParameters,
+      T Function(Map<String, dynamic>)? fromJson,
+      String? token} // Added token parameter
+      ) async {
     try {
       final response = await _dio.post(
         endpoint,
@@ -103,12 +102,9 @@ class ApiProvider {
   }
 
   // POST request with FormData (for file uploads)
-  Future<ApiResponse<T>> postFormData<T>(
-    String endpoint, {
-    required FormData formData,
-    T Function(Map<String, dynamic>)? fromJson,
-    String? token // Added token parameter
-  }) async {
+  Future<ApiResponse<T>> postFormData<T>(String endpoint,
+      {required FormData formData, T Function(Map<String, dynamic>)? fromJson, String? token // Added token parameter
+      }) async {
     try {
       final response = await _dio.post(
         endpoint,
@@ -140,12 +136,9 @@ class ApiProvider {
   }
 
   // DELETE request
-  Future<ApiResponse<T>> delete<T>(
-    String endpoint, {
-    Map<String, dynamic>? queryParameters,
-    T Function(Map<String, dynamic>)? fromJson,
-    String? token // Added token parameter
-  }) async {
+  Future<ApiResponse<T>> delete<T>(String endpoint,
+      {Map<String, dynamic>? queryParameters, T Function(Map<String, dynamic>)? fromJson, String? token // Added token parameter
+      }) async {
     try {
       final response = await _dio.delete(
         endpoint,
@@ -216,6 +209,7 @@ class ApiProvider {
 
   // Save auth token
   Future<void> saveToken(String token) async {
+    SharedPreferencesHelper.saveData(key: AppConstants.token, value: token);
     await _storage.write(key: AppConstants.tokenKey, value: token);
   }
 
@@ -229,5 +223,3 @@ class ApiProvider {
     await _storage.delete(key: AppConstants.tokenKey);
   }
 }
-
-

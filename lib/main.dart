@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'core/di/injection.dart';
 import 'presentation/auth/views/login_screen.dart';
 import 'presentation/home/views/home_screen.dart';
 import 'presentation/categories/views/add_category_screen.dart';
 import 'presentation/auth/controllers/auth_controller.dart';
 
-void main() {
-  // Initialize AuthController once at app start
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureInjection();
   Get.put(AuthController());
   runApp(const MyApp());
 }
@@ -78,6 +80,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AuthController authController = Get.find<AuthController>();
+
   @override
   void initState() {
     super.initState();
