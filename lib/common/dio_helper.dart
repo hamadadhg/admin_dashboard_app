@@ -19,7 +19,7 @@ class DioNetwork {
         receiveDataWhenStatusError: true,
       ),
     );
-    dio.options.headers = {'Accept': 'application/json'};
+    dio.options.headers = {'Accept': 'application/json', "Access-Control-Allow-Origin": "*"};
     dio.interceptors.addAll([LoggerInterceptor(), TokenInterceptor(), ...interceptors]);
   }
 
