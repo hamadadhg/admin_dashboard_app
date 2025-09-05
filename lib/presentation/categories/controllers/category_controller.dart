@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_admin_dashboard/data/services/category_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../domain/usecase/category_usecase.dart'; // Corrected import
@@ -32,8 +33,10 @@ class CategoryController extends GetxController {
 
   void _initializeUseCases() {
     final apiProvider = ApiProvider();
-    final categoryRepository = CategoryRepository(apiProvider); // Corrected repository
-    _categoryUseCase = CategoryUseCase(categoryRepository); // Corrected use case
+    final categoryRepository =
+        CategoryRepository(apiProvider); // Corrected repository
+    _categoryUseCase =
+        CategoryUseCase(categoryRepository); // Corrected use case
   }
 
   // Pick image from gallery
@@ -256,6 +259,36 @@ class CategoryController extends GetxController {
     super.onClose();
     nameController.dispose();
   }
+
+  Future<void> editCategory({
+    required CategoryModel category,
+    required String newName,
+    File? newImage,
+  }) async {
+    try {
+      isLoading.value = true;
+      final updated = await CategoryService.updateCategory(
+        id: category.id,
+        name: newName,
+        imageFile: newImage,
+      );
+
+      if (updated != null) {
+        // replace updated category in the list
+        int index = categories.indexWhere((c) => c.id == category.id);
+        if (index != -1) {
+          categories[index] = updated;
+        }
+        Get.snackbar("Success", "Category updated successfully",
+            backgroundColor: Get.theme.primaryColor,
+            colorText: Get.theme.colorScheme.onPrimary);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString(),
+          backgroundColor: Get.theme.colorScheme.error,
+          colorText: Get.theme.colorScheme.onError);
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
-
-

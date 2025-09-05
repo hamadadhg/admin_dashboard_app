@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_dashboard/data/models/category_model.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import '../controllers/category_controller.dart';
 import '../../shared/widgets/loading_widget.dart';
 import '../../shared/widgets/empty_state_widget.dart';
@@ -327,13 +330,57 @@ class CategoryListScreen extends StatelessWidget {
     );
   }
 
-  void _editCategory(category) {
-    Get.snackbar(
-      'Edit Category',
-      'Edit functionality will be implemented soon',
-      backgroundColor: Colors.orange,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
+  void _editCategory(CategoryModel category) {
+    final CategoryController controller = Get.find<CategoryController>();
+    final TextEditingController nameController =
+        TextEditingController(text: category.name);
+    File? pickedImage;
+
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Edit Category'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: "Category Name"),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: () async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  pickedImage = File(image.path);
+                  Get.snackbar("Image Selected", pickedImage!.path,
+                      snackPosition: SnackPosition.BOTTOM);
+                }
+              },
+              icon: const Icon(Icons.image),
+              label: const Text("Pick Image"),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await controller.editCategory(
+                category: category,
+                newName: nameController.text,
+                newImage: pickedImage,
+              );
+              Get.back();
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 
