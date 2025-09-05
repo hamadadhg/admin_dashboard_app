@@ -9,7 +9,7 @@ class ApiProvider {
 
   ApiProvider() {
     _dio = Dio(BaseOptions(
-      baseUrl: AppConstants.baseUrl,
+      baseUrl: AppConstants.kBaseUrl,
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       headers: {
@@ -68,18 +68,19 @@ class ApiProvider {
 
   // POST request
   Future<ApiResponse<T>> post<T>(
-    String endpoint, 
-    dynamic data, // Changed to dynamic
-    {Map<String, dynamic>? queryParameters,
-    T Function(Map<String, dynamic>)? fromJson,
-    String? token} // Added token parameter
-  ) async {
+      String endpoint, dynamic data, // Changed to dynamic
+      {Map<String, dynamic>? queryParameters,
+      T Function(Map<String, dynamic>)? fromJson,
+      String? token} // Added token parameter
+      ) async {
     try {
       final response = await _dio.post(
         endpoint,
         data: data,
         queryParameters: queryParameters,
-        options: token != null ? Options(headers: {'Authorization': 'Bearer $token'}) : null,
+        options: token != null
+            ? Options(headers: {'Authorization': 'Bearer $token'})
+            : null,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -103,12 +104,11 @@ class ApiProvider {
   }
 
   // POST request with FormData (for file uploads)
-  Future<ApiResponse<T>> postFormData<T>(
-    String endpoint, {
-    required FormData formData,
-    T Function(Map<String, dynamic>)? fromJson,
-    String? token // Added token parameter
-  }) async {
+  Future<ApiResponse<T>> postFormData<T>(String endpoint,
+      {required FormData formData,
+      T Function(Map<String, dynamic>)? fromJson,
+      String? token // Added token parameter
+      }) async {
     try {
       final response = await _dio.post(
         endpoint,
@@ -140,17 +140,18 @@ class ApiProvider {
   }
 
   // DELETE request
-  Future<ApiResponse<T>> delete<T>(
-    String endpoint, {
-    Map<String, dynamic>? queryParameters,
-    T Function(Map<String, dynamic>)? fromJson,
-    String? token // Added token parameter
-  }) async {
+  Future<ApiResponse<T>> delete<T>(String endpoint,
+      {Map<String, dynamic>? queryParameters,
+      T Function(Map<String, dynamic>)? fromJson,
+      String? token // Added token parameter
+      }) async {
     try {
       final response = await _dio.delete(
         endpoint,
         queryParameters: queryParameters,
-        options: token != null ? Options(headers: {'Authorization': 'Bearer $token'}) : null,
+        options: token != null
+            ? Options(headers: {'Authorization': 'Bearer $token'})
+            : null,
       );
 
       if (response.statusCode == 200) {
@@ -229,5 +230,3 @@ class ApiProvider {
     await _storage.delete(key: AppConstants.tokenKey);
   }
 }
-
-
