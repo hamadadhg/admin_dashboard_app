@@ -10,6 +10,7 @@ class AppConstants {
 
   // Storage Keys
   static const String tokenKey = 'auth_token';
+  static const String token = 'token';
   static const String adminDataKey = 'admin_data';
 
   // App Info
