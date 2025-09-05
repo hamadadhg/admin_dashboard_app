@@ -291,4 +291,26 @@ class CategoryController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> deleteCategory(CategoryModel category) async {
+    try {
+      isLoading.value = true;
+      final success = await CategoryService.deleteCategory(category.id);
+
+      if (success) {
+        categories.removeWhere((c) => c.id == category.id);
+
+        Get.snackbar("Success", "Category deleted successfully",
+            backgroundColor: Get.theme.primaryColor,
+            colorText: Get.theme.colorScheme.onPrimary);
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString(),
+          backgroundColor: Get.theme.colorScheme.error,
+          colorText: Get.theme.colorScheme.onError);
+      print(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

@@ -370,12 +370,12 @@ class CategoryListScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
+              Get.back();
               await controller.editCategory(
                 category: category,
                 newName: nameController.text,
                 newImage: pickedImage,
               );
-              Get.back();
             },
             child: const Text('Save'),
           ),
@@ -385,6 +385,8 @@ class CategoryListScreen extends StatelessWidget {
   }
 
   void _deleteCategory(category) {
+    final CategoryController controller = Get.find<CategoryController>();
+
     Get.dialog(
       AlertDialog(
         title: const Text('Delete Category'),
@@ -395,15 +397,9 @@ class CategoryListScreen extends StatelessWidget {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Get.back();
-              Get.snackbar(
-                'Delete Category',
-                'Delete functionality will be implemented soon',
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-                snackPosition: SnackPosition.TOP,
-              );
+              await controller.deleteCategory(category);
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
