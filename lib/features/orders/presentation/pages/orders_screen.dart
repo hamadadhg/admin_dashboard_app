@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../category_products/presentation/manager/bloc/category_products_bloc.dart';
 import '../manager/bloc/orders_bloc.dart';
+import '../widgets/order_details_dialog.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -81,7 +82,13 @@ class OrdersScreen extends StatelessWidget {
                     }
                     return ListView.separated(
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) => OrderDetailsDialog(
+                                    id: state.fetchOrders!.orders![index].id!,
+                                  ));
+                        },
                         child: Card(
                           elevation: 3,
                           shape: RoundedRectangleBorder(
