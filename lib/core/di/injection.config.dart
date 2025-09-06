@@ -20,6 +20,8 @@ import '../../features/category_products/data/repositories/category_products_rep
     as _i664;
 import '../../features/category_products/domain/repositories/category_products_repo.dart'
     as _i759;
+import '../../features/category_products/domain/use_cases/add_update_product_use_case.dart'
+    as _i764;
 import '../../features/category_products/domain/use_cases/fetch_category_products_use_case.dart'
     as _i114;
 import '../../features/category_products/presentation/manager/bloc/category_products_bloc.dart'
@@ -28,12 +30,24 @@ import '../../features/orders/data/data_sources/orders_remote_data_source.dart'
     as _i310;
 import '../../features/orders/data/repositories/orders_repo_impl.dart' as _i813;
 import '../../features/orders/domain/repositories/orders_repo.dart' as _i509;
+import '../../features/orders/domain/use_cases/change_order_status_use_case.dart'
+    as _i98;
 import '../../features/orders/domain/use_cases/fetch_order_details_use_case.dart'
     as _i494;
 import '../../features/orders/domain/use_cases/fetch_orders_use_case.dart'
     as _i908;
 import '../../features/orders/presentation/manager/bloc/orders_bloc.dart'
     as _i6;
+import '../../features/wallet/data/data_sources/wallet_remote_data_source.dart'
+    as _i102;
+import '../../features/wallet/data/repositories/wallet_repo_impl.dart' as _i935;
+import '../../features/wallet/domain/repositories/wallet_repo.dart' as _i180;
+import '../../features/wallet/domain/use_cases/fetch_used_unused_cards_use_case.dart'
+    as _i1054;
+import '../../features/wallet/domain/use_cases/generate_cards_use_case.dart'
+    as _i436;
+import '../../features/wallet/presentation/manager/bloc/wallet_bloc.dart'
+    as _i461;
 import 'injection.dart' as _i464;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -55,12 +69,23 @@ _i174.GetIt $initGetIt(
           dioNetwork: gh<_i725.DioNetwork>()));
   gh.lazySingleton<_i310.OrdersRemoteDataSource>(
       () => _i310.OrdersRemoteDataSource(dioNetwork: gh<_i725.DioNetwork>()));
+  gh.lazySingleton<_i102.WalletRemoteDataSource>(
+      () => _i102.WalletRemoteDataSource(dioNetwork: gh<_i725.DioNetwork>()));
   gh.lazySingleton<_i509.OrdersRepo>(() => _i813.OrdersRepoImpl(
       ordersRemoteDataSource: gh<_i310.OrdersRemoteDataSource>()));
   gh.lazySingleton<_i908.FetchOrdersUseCase>(
       () => _i908.FetchOrdersUseCase(ordersRepo: gh<_i509.OrdersRepo>()));
   gh.lazySingleton<_i494.FetchOrderDetailsUseCase>(
       () => _i494.FetchOrderDetailsUseCase(ordersRepo: gh<_i509.OrdersRepo>()));
+  gh.lazySingleton<_i98.ChangeOrderStatusUseCase>(
+      () => _i98.ChangeOrderStatusUseCase(ordersRepo: gh<_i509.OrdersRepo>()));
+  gh.lazySingleton<_i180.WalletRepo>(() => _i935.WalletRepoImpl(
+      walletRemoteDataSource: gh<_i102.WalletRemoteDataSource>()));
+  gh.factory<_i6.OrdersBloc>(() => _i6.OrdersBloc(
+        gh<_i908.FetchOrdersUseCase>(),
+        gh<_i494.FetchOrderDetailsUseCase>(),
+        gh<_i98.ChangeOrderStatusUseCase>(),
+      ));
   gh.lazySingleton<_i759.CategoryProductsRepo>(() =>
       _i664.CategoryProductsRepoImpl(
           categoryProductsRemoteDataSource:
@@ -68,12 +93,21 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i114.FetchCategoryProductsUseCase>(() =>
       _i114.FetchCategoryProductsUseCase(
           categoryProductsRepo: gh<_i759.CategoryProductsRepo>()));
-  gh.factory<_i6.OrdersBloc>(() => _i6.OrdersBloc(
-        gh<_i908.FetchOrdersUseCase>(),
-        gh<_i494.FetchOrderDetailsUseCase>(),
+  gh.lazySingleton<_i764.AddUpdateProductUseCase>(() =>
+      _i764.AddUpdateProductUseCase(
+          categoryProductsRepo: gh<_i759.CategoryProductsRepo>()));
+  gh.lazySingleton<_i1054.FetchUsedUnusedCardsUseCase>(() =>
+      _i1054.FetchUsedUnusedCardsUseCase(walletRepo: gh<_i180.WalletRepo>()));
+  gh.lazySingleton<_i436.GenerateCardsUseCase>(
+      () => _i436.GenerateCardsUseCase(walletRepo: gh<_i180.WalletRepo>()));
+  gh.factory<_i554.CategoryProductsBloc>(() => _i554.CategoryProductsBloc(
+        gh<_i114.FetchCategoryProductsUseCase>(),
+        gh<_i764.AddUpdateProductUseCase>(),
       ));
-  gh.factory<_i554.CategoryProductsBloc>(() =>
-      _i554.CategoryProductsBloc(gh<_i114.FetchCategoryProductsUseCase>()));
+  gh.factory<_i461.WalletBloc>(() => _i461.WalletBloc(
+        gh<_i1054.FetchUsedUnusedCardsUseCase>(),
+        gh<_i436.GenerateCardsUseCase>(),
+      ));
   return getIt;
 }
 

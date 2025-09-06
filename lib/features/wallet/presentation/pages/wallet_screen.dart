@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_dashboard/core/di/injection.dart';
+import 'package:flutter_admin_dashboard/features/wallet/presentation/widgets/generate_cards_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../category_products/presentation/manager/bloc/category_products_bloc.dart';
-import '../manager/bloc/orders_bloc.dart';
-import '../widgets/order_details_dialog.dart';
+import '../manager/bloc/wallet_bloc.dart';
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({super.key});
+class WalletScreen extends StatelessWidget {
+  const WalletScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Map<String, String> titles = {
-      "pending": "قيد الانتظار",
-      "in_delivery": "في التوصيل",
-      "completed": "مكتمل",
-      "confirmed": "مؤكد",
-      "canceled": "ملغي",
-    };
+    List<String> titles = [
+      'مستخدمة',
+      'غير مستخدمة',
+    ];
 
-    return BlocProvider<OrdersBloc>(
-      lazy: false,
-      create: (context) => getIt<OrdersBloc>()..add(FetchOrdersEvent(status: 'pending')),
+    return BlocProvider<WalletBloc>(
+      create: (context) => getIt<WalletBloc>()..add(FetchCardsEvent(isUsed: true)),
       child: Scaffold(
+        floatingActionButton: BlocBuilder<WalletBloc, WalletState>(
+          builder: (context, state) {
+            return FloatingActionButton(
+              onPressed: () {
+                showDialog(context: context, builder: (_) => GenerateCardsDialog(bloc: context.read<WalletBloc>()));
+              },
+              backgroundColor: Colors.purpleAccent,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            );
+          },
+        ),
         body: Column(
           children: [
             const SizedBox(
@@ -30,16 +40,16 @@ class OrdersScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
-              child: BlocBuilder<OrdersBloc, OrdersState>(
+              child: BlocBuilder<WalletBloc, WalletState>(
                 builder: (context, state) {
                   return Row(
                     spacing: 20,
                     children: List.generate(
-                        5,
+                        2,
                         (i) => Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  context.read<OrdersBloc>().add(FetchOrdersEvent(status: titles.keys.toList()[i]));
+                                  context.read<WalletBloc>().add(FetchCardsEvent(isUsed: i == 0));
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -49,7 +59,7 @@ class OrdersScreen extends StatelessWidget {
                                   padding: const EdgeInsetsDirectional.symmetric(horizontal: 20, vertical: 10),
                                   child: Center(
                                     child: Text(
-                                      titles.values.toList()[i],
+                                      titles[i],
                                     ),
                                   ),
                                 ),
@@ -59,9 +69,9 @@ class OrdersScreen extends StatelessWidget {
                 },
               ),
             ),
-            Expanded(child: BlocBuilder<OrdersBloc, OrdersState>(
+            Expanded(child: BlocBuilder<WalletBloc, WalletState>(
               builder: (context, state) {
-                switch (state.fetchOrdersStatus) {
+                switch (state.fetchCardsStatus) {
                   case null:
                     return const Center(
                       child: CircularProgressIndicator.adaptive(),
@@ -75,20 +85,14 @@ class OrdersScreen extends StatelessWidget {
                       child: CircularProgressIndicator.adaptive(),
                     );
                   case BLocStatus.success:
-                    if (state.fetchOrders!.orders!.isEmpty) {
+                    if (state.fetchCards!.vouchers!.isEmpty) {
                       return const Center(
-                        child: Text('لا يوجد طلبات'),
+                        child: Text('لا يوجد بطاقات'),
                       );
                     }
                     return ListView.separated(
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) => OrderDetailsDialog(
-                                    id: state.fetchOrders!.orders![index].id!,
-                                  ));
-                        },
+                        onTap: () {},
                         child: Card(
                           elevation: 3,
                           shape: RoundedRectangleBorder(
@@ -103,7 +107,7 @@ class OrdersScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      state.fetchOrders!.orders![index].username!,
+                                      state.fetchCards!.vouchers![index].code!,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -112,7 +116,7 @@ class OrdersScreen extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
-                                      state.fetchOrders!.orders![index].orderType!,
+                                      state.fetchCards!.vouchers![index].amount!,
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -120,41 +124,7 @@ class OrdersScreen extends StatelessWidget {
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    Text(
-                                      'price: ${state.fetchOrders!.orders![index].price!}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
                                   ],
-                                ),
-                                BlocConsumer<OrdersBloc, OrdersState>(
-                                  listener: (context, state) {},
-                                  builder: (context, state) {
-                                    return InkWell(
-                                      onTap: () {
-                                        context.read<OrdersBloc>().add(ChangeOrderStatus(context, id: state.fetchOrders!.orders![index].id!, index: index));
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20),
-                                          color: Colors.purpleAccent,
-                                        ),
-                                        padding: const EdgeInsetsDirectional.all(20),
-                                        child: state.changeStatus == BLocStatus.loading && index == state.index
-                                            ? const Center(child: CircularProgressIndicator.adaptive())
-                                            : const Center(
-                                                child: Text(
-                                                  'تأكيد الطلب',
-                                                  style: TextStyle(color: Colors.white),
-                                                ),
-                                              ),
-                                      ),
-                                    );
-                                  },
                                 ),
                               ],
                             ),
@@ -165,7 +135,7 @@ class OrdersScreen extends StatelessWidget {
                         height: 20,
                       ),
                       padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
-                      itemCount: state.fetchOrders!.orders!.length,
+                      itemCount: state.fetchCards!.vouchers!.length,
                     );
                   case BLocStatus.error:
                     return Center(

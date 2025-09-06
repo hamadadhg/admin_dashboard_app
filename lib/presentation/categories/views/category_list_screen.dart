@@ -86,6 +86,10 @@ class CategoryListScreen extends StatelessWidget {
     );
   }
 
+  String proxyUrl(String url) {
+    return 'https://corsproxy.io/?${Uri.encodeFull(url)}';
+  }
+
   Widget _buildCategoryCard(CategoryModel category, BuildContext context) {
     return InkWell(
       onTap: (){
@@ -116,7 +120,7 @@ class CategoryListScreen extends StatelessWidget {
                   ),
                   child: category.image.isNotEmpty
                       ? Image.network(
-                          category.image,
+                          proxyUrl(category.image),
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(

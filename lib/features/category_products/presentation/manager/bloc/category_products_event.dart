@@ -7,3 +7,9 @@ class FetchCategoryProductsEvent extends CategoryProductsEvent {
 
   FetchCategoryProductsEvent({required this.id});
 }
+
+class AddEditProductEvent extends CategoryProductsEvent {
+  final AddUpdateProductParams params;
+
+  AddEditProductEvent({required this.params});
+}
