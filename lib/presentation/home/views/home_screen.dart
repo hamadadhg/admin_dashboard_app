@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_admin_dashboard/features/reservations/presentation/views/reservations_view.dart';
+import 'package:flutter_admin_dashboard/features/reservations/presentation/reservation_details/reservation_details.dart';
 import 'package:get/get.dart';
 import '../../../features/orders/presentation/pages/orders_screen.dart';
 import '../../../features/wallet/presentation/pages/wallet_screen.dart';
@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
           case 4:
             return const WalletScreen();
           case 5:
-            return const ReservationsView();
+            return const ReservationDetails();
           default:
             return const DashboardScreen();
         }
