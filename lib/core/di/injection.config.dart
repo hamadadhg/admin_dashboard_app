@@ -24,6 +24,16 @@ import '../../features/category_products/domain/use_cases/fetch_category_product
     as _i114;
 import '../../features/category_products/presentation/manager/bloc/category_products_bloc.dart'
     as _i554;
+import '../../features/orders/data/data_sources/orders_remote_data_source.dart'
+    as _i310;
+import '../../features/orders/data/repositories/orders_repo_impl.dart' as _i813;
+import '../../features/orders/domain/repositories/orders_repo.dart' as _i509;
+import '../../features/orders/domain/use_cases/fetch_order_details_use_case.dart'
+    as _i494;
+import '../../features/orders/domain/use_cases/fetch_orders_use_case.dart'
+    as _i908;
+import '../../features/orders/presentation/manager/bloc/orders_bloc.dart'
+    as _i6;
 import 'injection.dart' as _i464;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -43,6 +53,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i368.CategoryProductsRemoteDataSource>(() =>
       _i368.CategoryProductsRemoteDataSource(
           dioNetwork: gh<_i725.DioNetwork>()));
+  gh.lazySingleton<_i310.OrdersRemoteDataSource>(
+      () => _i310.OrdersRemoteDataSource(dioNetwork: gh<_i725.DioNetwork>()));
+  gh.lazySingleton<_i509.OrdersRepo>(() => _i813.OrdersRepoImpl(
+      ordersRemoteDataSource: gh<_i310.OrdersRemoteDataSource>()));
+  gh.lazySingleton<_i908.FetchOrdersUseCase>(
+      () => _i908.FetchOrdersUseCase(ordersRepo: gh<_i509.OrdersRepo>()));
+  gh.lazySingleton<_i494.FetchOrderDetailsUseCase>(
+      () => _i494.FetchOrderDetailsUseCase(ordersRepo: gh<_i509.OrdersRepo>()));
   gh.lazySingleton<_i759.CategoryProductsRepo>(() =>
       _i664.CategoryProductsRepoImpl(
           categoryProductsRemoteDataSource:
@@ -50,6 +68,10 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i114.FetchCategoryProductsUseCase>(() =>
       _i114.FetchCategoryProductsUseCase(
           categoryProductsRepo: gh<_i759.CategoryProductsRepo>()));
+  gh.factory<_i6.OrdersBloc>(() => _i6.OrdersBloc(
+        gh<_i908.FetchOrdersUseCase>(),
+        gh<_i494.FetchOrderDetailsUseCase>(),
+      ));
   gh.factory<_i554.CategoryProductsBloc>(() =>
       _i554.CategoryProductsBloc(gh<_i114.FetchCategoryProductsUseCase>()));
   return getIt;
