@@ -13,3 +13,11 @@ class FetchOrderDetailsEvent extends OrdersEvent {
 
   FetchOrderDetailsEvent({required this.id});
 }
+
+class ChangeOrderStatus extends OrdersEvent {
+  final int id;
+  final int index;
+  final BuildContext context;
+
+  ChangeOrderStatus(this.context, {required this.id, required this.index});
+}

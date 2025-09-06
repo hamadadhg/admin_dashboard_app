@@ -1,3 +1,4 @@
+import 'package:flutter_admin_dashboard/common/common_model.dart';
 import 'package:flutter_admin_dashboard/common/error_handeler.dart';
 import 'package:flutter_admin_dashboard/common/typedef.dart';
 import 'package:flutter_admin_dashboard/features/orders/data/models/orders_model.dart';
@@ -20,5 +21,10 @@ class OrdersRepoImpl with HandlingException implements OrdersRepo {
   @override
   DataResponse<OrdersModel> fetchOrderDetails(int id) {
     return wrapHandlingException(tryCall: () => ordersRemoteDataSource.fetchOrderDetails(id));
+  }
+
+  @override
+  DataResponse<CommonModel> changeOrderStatus(int id) {
+    return wrapHandlingException(tryCall: () => ordersRemoteDataSource.changeOrderStatus(id));
   }
 }

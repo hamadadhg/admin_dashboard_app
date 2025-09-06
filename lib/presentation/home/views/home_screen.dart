@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../features/orders/presentation/pages/orders_screen.dart';
+import '../../../features/wallet/presentation/pages/wallet_screen.dart';
 import '../controllers/home_controller.dart';
 import '../../users/views/user_list_screen.dart';
 import '../../categories/views/category_list_screen.dart';
@@ -61,6 +62,8 @@ class HomeScreen extends StatelessWidget {
             return const CategoryListScreen();
           case 3:
             return const OrdersScreen();
+          case 4:
+            return const WalletScreen();
           default:
             return const DashboardScreen();
         }
@@ -87,6 +90,10 @@ class HomeScreen extends StatelessWidget {
               BottomNavigationBarItem(
                 icon: Icon(Icons.bookmark_add),
                 label: 'Orders',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.wallet),
+                label: 'Wallet',
               ),
             ],
           )),

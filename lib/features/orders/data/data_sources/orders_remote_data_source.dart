@@ -1,4 +1,5 @@
 import 'package:flutter_admin_dashboard/common/api_handler.dart';
+import 'package:flutter_admin_dashboard/common/common_model.dart';
 import 'package:flutter_admin_dashboard/common/dio_helper.dart';
 import 'package:flutter_admin_dashboard/features/orders/data/models/orders_model.dart';
 import 'package:injectable/injectable.dart';
@@ -16,5 +17,9 @@ class OrdersRemoteDataSource with HandlingApiManager {
 
   Future<OrdersModel> fetchOrderDetails(int id) {
     return wrapHandlingApi(tryCall: () => dioNetwork.getData(endPoint: '/orders/Details/$id'), jsonConvert: ordersModelFromJson);
+  }
+
+  Future<CommonModel> changeOrderStatus(int id) {
+    return wrapHandlingApi(tryCall: () => dioNetwork.postData(endPoint: '/orders/confirm/$id', data: {}), jsonConvert: commonResponseFromJson);
   }
 }

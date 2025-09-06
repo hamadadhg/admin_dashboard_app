@@ -5,6 +5,9 @@ class OrdersState {
   BLocStatus? fetchOrdersStatus;
   OrdersModel? fetchOrders;
 
+  BLocStatus? changeStatus;
+  int? index;
+
   BLocStatus? fetchOrderDetailsStatus;
   OrdersModel? fetchOrderDetails;
 
@@ -14,6 +17,8 @@ class OrdersState {
     this.fetchOrdersStatus,
     this.fetchOrderDetails,
     this.fetchOrderDetailsStatus,
+    this.changeStatus,
+    this.index,
   });
 
   OrdersState copyWith({
@@ -22,6 +27,8 @@ class OrdersState {
     OrdersModel? fetchOrders,
     BLocStatus? fetchOrderDetailsStatus,
     OrdersModel? fetchOrderDetails,
+    BLocStatus? changeStatus,
+    int? index,
   }) =>
       OrdersState(
         errorMessage: errorMessage ?? this.errorMessage,
@@ -29,5 +36,7 @@ class OrdersState {
         fetchOrders: fetchOrders ?? this.fetchOrders,
         fetchOrderDetailsStatus: fetchOrderDetailsStatus ?? this.fetchOrderDetailsStatus,
         fetchOrderDetails: fetchOrderDetails ?? this.fetchOrderDetails,
+        changeStatus: changeStatus ?? this.changeStatus,
+        index: index ?? this.index,
       );
 }

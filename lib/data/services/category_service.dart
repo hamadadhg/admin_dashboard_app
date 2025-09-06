@@ -89,4 +89,39 @@ class CategoryService {
       throw Exception("Error: $e");
     }
   }
+
+  static Future<CategoryModel?> updateCategoryProduct({
+    required int id,
+    required String name,
+    required String price,
+    required String details,
+    required File? imageFile,
+  }) async {
+    try {
+      var uri = Uri.parse("$baseUrl/updateProduct/$id");
+      var request = http.MultipartRequest("POST", uri);
+
+      request.fields['name'] = name;
+      request.fields['price'] = name;
+      request.fields['detaile'] = name;
+
+      if (imageFile != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath("image", imageFile.path),
+        );
+      }
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return CategoryModel.fromJson(data['category']);
+      } else {
+        throw Exception("Failed to update category: ${response.body}");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
 }
