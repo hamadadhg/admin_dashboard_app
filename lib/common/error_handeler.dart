@@ -7,7 +7,8 @@ import 'error_model.dart';
 import 'failure.dart';
 
 mixin HandlingException {
-  Future<Either<Failure, T>> wrapHandlingException<T>({required Future<T> Function() tryCall}) async {
+  Future<Either<Failure, T>> wrapHandlingException<T>(
+      {required Future<T> Function() tryCall}) async {
     try {
       final result = await tryCall();
       return Right(result);
@@ -56,16 +57,26 @@ class ErrorHandler implements Exception {
           case ResponseCode.forBidden:
             return DataSource.forBidden.getFailure();
           case ResponseCode.blocked:
-            return const UserBlockedFailure(message: AppConstantsV2.blockedError);
+            return const UserBlockedFailure(
+                message: AppConstantsV2.blockedError);
           case ResponseCode.notAllowed:
-            return const UserNotAllowedFailure(message: AppConstantsV2.notAllowed);
+            return const UserNotAllowedFailure(
+                message: AppConstantsV2.notAllowed);
           case ResponseCode.badContent:
-            return ServerFailure(message: ErrorMessageModel.fromJson(error.response?.data).statusMessage, statusCode: ResponseCode.badContent);
+            return ServerFailure(
+                message: ErrorMessageModel.fromJson(error.response?.data)
+                    .statusMessage,
+                statusCode: ResponseCode.badContent);
           case ResponseCode.badRequestServer:
-            return ServerFailure(message: ErrorMessageModel.fromJson(error.response?.data).statusMessage, statusCode: ResponseCode.badRequestServer);
+            return ServerFailure(
+                message: ErrorMessageModel.fromJson(error.response?.data)
+                    .statusMessage,
+                statusCode: ResponseCode.badRequestServer);
           default:
             return ServerFailure(
-              message: error.response?.data["message"].toString() ?? error.response?.data["errors"]?.toString() ?? '',
+              message: error.response?.data["message"].toString() ??
+                  error.response?.data["errors"]?.toString() ??
+                  '',
               statusCode: error.response?.statusCode ?? ResponseCode.badRequest,
             );
         }
@@ -77,33 +88,58 @@ extension DataSourceExtension on DataSource {
   Failure getFailure() {
     switch (this) {
       case DataSource.success:
-        return const ServerFailure(statusCode: ResponseCode.success, message: ResponseMessage.SUCCESS);
+        return const ServerFailure(
+            statusCode: ResponseCode.success, message: ResponseMessage.SUCCESS);
       case DataSource.noInternet:
-        return const ServerFailure(statusCode: ResponseCode.noContent, message: ResponseMessage.NO_CONTENT);
+        return const ServerFailure(
+            statusCode: ResponseCode.noContent,
+            message: ResponseMessage.NO_CONTENT);
       case DataSource.badRequest:
-        return const ServerFailure(statusCode: ResponseCode.badRequest, message: ResponseMessage.BAD_REQUEST);
+        return const ServerFailure(
+            statusCode: ResponseCode.badRequest,
+            message: ResponseMessage.BAD_REQUEST);
       case DataSource.forBidden:
-        return const ServerFailure(statusCode: ResponseCode.forBidden, message: ResponseMessage.FORBIDDEN);
+        return const ServerFailure(
+            statusCode: ResponseCode.forBidden,
+            message: ResponseMessage.FORBIDDEN);
       case DataSource.unAuthorized:
-        return const ServerFailure(statusCode: ResponseCode.unAuthorized, message: ResponseMessage.UNAUTORISED);
+        return const ServerFailure(
+            statusCode: ResponseCode.unAuthorized,
+            message: ResponseMessage.UNAUTORISED);
       case DataSource.notFound:
-        return const ServerFailure(statusCode: ResponseCode.notFound, message: ResponseMessage.NOT_FOUND);
+        return const ServerFailure(
+            statusCode: ResponseCode.notFound,
+            message: ResponseMessage.NOT_FOUND);
       case DataSource.internetServerError:
-        return const ServerFailure(statusCode: ResponseCode.internalServerError, message: ResponseMessage.INTERNAL_SERVER_ERROR);
+        return const ServerFailure(
+            statusCode: ResponseCode.internalServerError,
+            message: ResponseMessage.INTERNAL_SERVER_ERROR);
       case DataSource.connectTimeOut:
-        return const ServerFailure(statusCode: ResponseCode.connectTimeOut, message: ResponseMessage.CONNECT_TIMEOUT);
+        return const ServerFailure(
+            statusCode: ResponseCode.connectTimeOut,
+            message: ResponseMessage.CONNECT_TIMEOUT);
       case DataSource.cancel:
-        return const ServerFailure(statusCode: ResponseCode.cancel, message: ResponseMessage.CANCEL);
+        return const ServerFailure(
+            statusCode: ResponseCode.cancel, message: ResponseMessage.CANCEL);
       case DataSource.receiveTimeOut:
-        return const ServerFailure(statusCode: ResponseCode.receiveTimeOut, message: ResponseMessage.RECIEVE_TIMEOUT);
+        return const ServerFailure(
+            statusCode: ResponseCode.receiveTimeOut,
+            message: ResponseMessage.RECIEVE_TIMEOUT);
       case DataSource.sendTimeOut:
-        return const ServerFailure(statusCode: ResponseCode.sendTimeOut, message: ResponseMessage.SEND_TIMEOUT);
+        return const ServerFailure(
+            statusCode: ResponseCode.sendTimeOut,
+            message: ResponseMessage.SEND_TIMEOUT);
       case DataSource.cashError:
-        return const ServerFailure(statusCode: ResponseCode.cashError, message: ResponseMessage.CACHE_ERROR);
+        return const ServerFailure(
+            statusCode: ResponseCode.cashError,
+            message: ResponseMessage.CACHE_ERROR);
       case DataSource.noInternetConnection:
-        return const ServerFailure(statusCode: ResponseCode.noInternetConnection, message: ResponseMessage.NO_INTERNET_CONNECTION);
+        return const ServerFailure(
+            statusCode: ResponseCode.noInternetConnection,
+            message: ResponseMessage.NO_INTERNET_CONNECTION);
       case DataSource.Default:
-        return const ServerFailure(statusCode: ResponseCode.Default, message: ResponseMessage.DEFAULT);
+        return const ServerFailure(
+            statusCode: ResponseCode.Default, message: ResponseMessage.DEFAULT);
     }
   }
 }
@@ -119,7 +155,8 @@ class ResponseCode {
   static const int notAllowed = 405; // failure, not allowed
   static const int blocked = 420; // failure,blocked
   static const int badContent = 422; // failure, Bad_Content
-  static const int badRequestServer = 402; // ServerFailure, API rejected request
+  static const int badRequestServer =
+      402; // ServerFailure, API rejected request
 
   // local status code
   static const int connectTimeOut = -1;
@@ -133,12 +170,18 @@ class ResponseCode {
 
 class ResponseMessage {
   static const String SUCCESS = AppConstantsV2.success; // success with data
-  static const String NO_CONTENT = AppConstantsV2.success; // success with no data (no content)
-  static const String BAD_REQUEST = AppConstantsV2.badRequestError; // failure, API rejected request
-  static const String UNAUTORISED = AppConstantsV2.unauthorizedError; // failure, user is not authorised
-  static const String FORBIDDEN = AppConstantsV2.forbiddenError; //  failure, API rejected request
-  static const String INTERNAL_SERVER_ERROR = AppConstantsV2.internalServerError; // failure, crash in server side
-  static const String NOT_FOUND = AppConstantsV2.notFoundError; // failure, crash in server side
+  static const String NO_CONTENT =
+      AppConstantsV2.success; // success with no data (no content)
+  static const String BAD_REQUEST =
+      AppConstantsV2.badRequestError; // failure, API rejected request
+  static const String UNAUTORISED =
+      AppConstantsV2.unauthorizedError; // failure, user is not authorised
+  static const String FORBIDDEN =
+      AppConstantsV2.forbiddenError; //  failure, API rejected request
+  static const String INTERNAL_SERVER_ERROR =
+      AppConstantsV2.internalServerError; // failure, crash in server side
+  static const String NOT_FOUND =
+      AppConstantsV2.notFoundError; // failure, crash in server side
 
   // local status code
   static const String CONNECT_TIMEOUT = AppConstantsV2.timeoutError;
@@ -158,11 +201,13 @@ class AppConstantsV2 {
   static const String badRequestError = 'Bad request';
   static const String noContent = 'No Content';
   static const String forbiddenError = 'Forbidden user';
-  static const String unauthorizedError = 'Un Authorized user'; //"unauthorized_error";
+  static const String unauthorizedError =
+      'Un Authorized user'; //"unauthorized_error";
   static const String notFoundError = '404 not found';
   static const String conflictError = 'Conflict Error';
   static const String blockedError = 'Blocked User';
-  static const String internalServerError = 'Server Error'; //"internal_server_error";
+  static const String internalServerError =
+      'Server Error'; //"internal_server_error";
   static const String notAllowed = 'Not allowed'; //"internal_server_error";
 
   static const String unknownError = 'Error';
