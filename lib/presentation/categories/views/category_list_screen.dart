@@ -88,8 +88,13 @@ class CategoryListScreen extends StatelessWidget {
 
   Widget _buildCategoryCard(CategoryModel category, BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryProductsScreen(category: category,)));
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CategoryProductsScreen(
+                      category: category,
+                    )));
       },
       child: Card(
         elevation: 3,
@@ -237,7 +242,8 @@ class CategoryListScreen extends StatelessWidget {
                               value: 'delete',
                               child: Row(
                                 children: [
-                                  Icon(Icons.delete, size: 18, color: Colors.red),
+                                  Icon(Icons.delete,
+                                      size: 18, color: Colors.red),
                                   SizedBox(width: 8),
                                   Text('Delete',
                                       style: TextStyle(color: Colors.red)),
