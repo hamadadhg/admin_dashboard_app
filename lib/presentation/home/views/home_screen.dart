@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_admin_dashboard/features/reservations/presentation/views/reservations_view.dart';
 import 'package:get/get.dart';
 import '../../../features/orders/presentation/pages/orders_screen.dart';
 import '../../../features/wallet/presentation/pages/wallet_screen.dart';
@@ -64,6 +65,8 @@ class HomeScreen extends StatelessWidget {
             return const OrdersScreen();
           case 4:
             return const WalletScreen();
+          case 5:
+            return const ReservationsView();
           default:
             return const DashboardScreen();
         }
@@ -94,6 +97,10 @@ class HomeScreen extends StatelessWidget {
               BottomNavigationBarItem(
                 icon: Icon(Icons.wallet),
                 label: 'Wallet',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.airline_seat_legroom_extra),
+                label: 'Reservations',
               ),
             ],
           )),
